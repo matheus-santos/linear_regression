@@ -17,6 +17,7 @@ In statistics, linear regression is an approach for modeling the relationship be
 ## Requirements
 * [Numpy](http://www.numpy.org/)
 * [MatPlotLib](http://matplotlib.org/)
+* [Timer](https://gist.github.com/matheus-santos/7b92b485756957f58030)
 
 ## Examples
 ### Benchmark
