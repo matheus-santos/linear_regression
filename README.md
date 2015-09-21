@@ -6,6 +6,7 @@ Description: Learning linear regression to use machine learning
 1. [Description](#description)
 2. [Introduction](#introduction)
 3. [Requirements](#requirements)
+4. [Examples](#examples)
 
 ## Description
 First steps into the crazy world of machine learning
@@ -16,3 +17,10 @@ In statistics, linear regression is an approach for modeling the relationship be
 ## Requirements
 * [Numpy](http://www.numpy.org/)
 * [MatPlotLib](http://matplotlib.org/)
+
+## Examples
+### Benchmark
+### Learning Alpha
+### Polynomial regression
+### Gradient descent 
+### Normal equation

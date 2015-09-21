@@ -5,7 +5,7 @@
 
 # Imports
 import numpy as np
-import debug.debug as debug
+import decimal
 
 
 # Linear Regression class
@@ -19,6 +19,8 @@ class LinearRegression(object):
     a = 0  # Learning rate alpha
     m = 0  # Size of X
     n = 0  # Number of features in X
+
+    # Info
 
     # Ctor
     def __init__(self, X=[], Y=[], a=0.01, prepend_x0=True):
@@ -34,15 +36,75 @@ class LinearRegression(object):
     def getAlpha(self):
         return self.a
 
+    # Learning best learning rate alpha
+    def learnAlpha(self, exponent=4, sample_size=1):
+
+        exponent_counter = 0
+        tries = 0
+        factor = -1
+        steps = self.getAlpha()/10
+        changed_direction = False  # Flag
+
+        # Using 70% of the data to guess alpha
+        X = self.X
+        sample = int(sample_size * self.m)
+        self.X = [self.X[i] for i in xrange(sample)]
+
+        # Error rates (previous and current)
+        previous_e = self.getErrorRate()
+        e = 1
+        a = self.getAlpha()
+
+        # Iterating
+        while True:
+
+            tries += 1  # Couting tries
+
+            self.gradientDescent()  # Iterating through data
+            e = self.getErrorRate()  # Error rate
+
+            # It is getting worst, must decide pivot or finish
+            if previous_e < e:
+
+                if not changed_direction:
+                    changed_direction = True
+                    factor *= -1
+
+                # Already changed direction
+                else:
+                    changed_direction = False
+                    factor *= -1
+                    steps = steps/10
+                    exponent_counter += 1
+
+            # Max tries
+            if tries == 100:
+                break
+
+            # Required exponent
+            if exponent_counter >= exponent:
+                break
+
+            previous_e = e
+            a = self.getAlpha() + factor * steps  # New a
+            self.setAlpha(a)
+
+        # Original dataset
+        self.X = X
+
+        return self.getAlpha()
+
     # Setting dataset
     def setDataset(self, X=[], Y=[], prepend_x0=True):
 
+        # Insufficient data
         if len(X) == 0:
             print("Error: Insufficient rows into dataset.")
             return False
 
+        # Prepending x0 = 1 into dataset X
         if prepend_x0:
-            X = [([1] + x) for x in X]  # Prepending x0 = 1 into dataset X
+            X = [([1] + x) for x in X]
 
         self.X = X  # Copying dataset X
         self.m = len(self.X)  # Lenght of X
@@ -69,7 +131,13 @@ class LinearRegression(object):
 
     # Minimizing Theta parameters
     def minimize(self):
-        return self.gradientDescent()
+
+        # NE doesn't work weel with large datasets.
+        # Better go with gradient descent
+        if self.m > 1000:
+            return self.gradientDescent()
+
+        return self.normalEquation()
 
     # Minimizing Theta parameters using gradient descent method
     def gradientDescent(self):
